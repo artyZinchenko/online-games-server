@@ -8,8 +8,16 @@ export const leaveGame = async (
     socket: Socket,
     gameData: GameData
 ) => {
-    await Waiting.findOneAndDelete({ id: socket.id });
-    if (gameData.opponent) {
-        io.to(gameData.opponent.id).emit('opponent_disconnected');
+    try {
+        await Waiting.findOneAndDelete({ id: socket.id });
+        if (gameData.opponent) {
+            io.to(gameData.opponent.id).emit('opponent_disconnected');
+        }
+    } catch (err) {
+        let message = 'Error ';
+        if (err instanceof Error) {
+            message += err.message;
+        }
+        throw new Error(message);
     }
 };

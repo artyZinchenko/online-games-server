@@ -9,18 +9,26 @@ export async function createGame(
     io: Server,
     gameData: GameData
 ) {
-    const newWaiting = new Waiting({
-        id: socket.id,
-        username: username,
-        gameName,
-    });
+    try {
+        const newWaiting = new Waiting({
+            id: socket.id,
+            username: username,
+            gameName,
+        });
 
-    await newWaiting.save();
-    gameData.player.createPlayer(socket.id, username);
-    io.to(gameData.player.id).emit('waiting_game');
-    socket.broadcast.emit('game_created', {
-        id: socket.id,
-        username,
-        gameName,
-    });
+        await newWaiting.save();
+        gameData.player.createPlayer(socket.id, username);
+        io.to(gameData.player.id).emit('waiting_game');
+        socket.broadcast.emit('game_created', {
+            id: socket.id,
+            username,
+            gameName,
+        });
+    } catch (err) {
+        let message = 'Error ';
+        if (err instanceof Error) {
+            message += err.message;
+        }
+        throw new Error(message);
+    }
 }
