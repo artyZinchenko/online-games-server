@@ -26,12 +26,15 @@ const wsMiddleware = async (socket: Socket, io: Server, gameData: GameData) => {
         });
 
         socket.on('join_game_byId', async (clientData) => {
-            const { id, username, gameName } = clientData;
+            const { id, username, gameName, socketUsername } = clientData;
+            console.log(clientData);
+            console.log(socket.id);
             return await joinGameById(
                 id,
                 username,
                 gameName,
                 socket,
+                socketUsername,
                 io,
                 gameData
             );

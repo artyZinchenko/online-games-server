@@ -7,18 +7,23 @@ export async function joinGameById(
     username: string,
     gameName: string,
     socket: Socket,
+    socketUsername: string,
     io: Server,
     gameData: GameData
 ) {
     try {
+        console.log('JOIN by ID');
         const { player, opponent, game } = gameData;
+        console.log(id, username, gameName);
+        console.log(socket.id);
 
         if (id === socket.id) {
             return;
         }
 
-        player.createPlayer(socket.id, username);
+        player.createPlayer(socket.id, socketUsername);
         opponent.createPlayer(id, username);
+        console.log(player, opponent);
 
         game.addPlayer(player);
         game.addPlayer(opponent);
